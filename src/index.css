@@ -1,0 +1,251 @@
+:root {
+  background-color: rgb(51, 51, 51);
+  font-family: "Roboto", sans-serif;
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button {  
+  opacity: 1;
+}
+
+/* * {
+  outline: 0.1px dotted red;
+} */
+
+body {
+  color: white;
+}
+
+li {
+  list-style: none;
+}
+
+fieldset {
+  margin: 1.5rem 0;
+}
+
+h2 {
+  font-size: 1.4rem;
+}
+
+/* Header Component */
+.header-Container {
+  text-align: center;
+}
+
+.title {
+  font-size: 3rem;
+  letter-spacing: 0.2rem;
+}
+
+.neonText {
+  color: #FFF;
+  text-shadow:
+    0 0 5px #FFF,
+    0 0 10px #FFF,
+    0 0 20px #FFF,
+    0 0 40px rgb(63, 92, 255),
+    0 0 80px rgb(63, 92, 255),
+    0 0 90px rgb(63, 92, 255),
+    0 0 100px rgb(63, 92, 255);
+}
+
+.redNeon {
+  color: #c95b5b;
+  text-shadow:
+    0 0 5px #c95b5b,
+    0 0 10px #da4848,
+    0 0 40px #da4848,
+    0 0 80px #da4848,
+    0 0 90px rgb(63, 92, 255),
+    0 0 100px rgb(63, 92, 255);
+}
+
+.neonText span {
+  animation: flicker 1100ms infinite;
+}
+
+.neonText .neon-flicker {
+  animation-delay: 0.1s;
+}
+
+@keyframes flicker {
+  0% {opacity: 0;}
+  10% {opacity: 1;}
+  20% {opacity: 0;}
+  40% {opacity: 1;}
+  50% {opacity: 0;}
+  60% {opacity: 1;}
+  80% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
+.warning {
+  letter-spacing: 0.3rem;
+  color: #ffffff;
+  text-shadow:
+    0 0 5px #ffffff,
+    0 0 40px #ffffff;
+}
+
+.datePicker-container {
+  margin: 1rem 0;
+}
+
+.datePicker-container input {
+  color: rgb(212, 212, 212);
+  text-align: center;
+  font-size: 1.1rem;
+  background-color: #505050;
+}
+
+legend {
+  font-size: 1.3rem;
+  letter-spacing: 0.15rem;
+  color: #FFF;
+  text-shadow:
+    0 0 5px #FFF,
+    0 0 10px #FFF,
+    0 0 20px #FFF,
+    0 0 40px rgb(63, 92, 255),
+    0 0 80px rgb(63, 92, 255),
+    0 0 90px rgb(63, 92, 255),
+    0 0 100px rgb(63, 92, 255);
+}
+/* CCOM Component */
+
+
+/* Bulletin Component */
+.bulletin-input {
+  width: 3rem;
+  height: 1.9rem;
+  margin-left: 0.8rem;
+  font-size: 1rem;
+  text-indent: 0.15rem;
+  margin-top: 1.5rem;
+}
+
+li, p {
+  margin-bottom: 1rem;
+}
+
+.bulletinData-container {
+  display: flex;
+  grid-gap: 1rem;
+}
+
+/* Additional Remark Component */
+.additionalRemarks-Container {
+  margin-bottom: 4.5rem;
+}
+
+.additionalRemark-input {
+  width: 100%;
+  height: 5rem;
+  font-size: 1rem;
+}
+
+/* Copy Button */
+.copyButton {
+  cursor: pointer;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 7%;
+  background-color: #17c47c;
+  animation: blink 2s infinite linear;
+  color: white;
+  font-size: 2.2rem;
+  border: none;
+  border-radius: 0.5rem 0.5rem 0 0;
+  text-shadow:
+    0 0 5px #FFF,
+    0 0 10px #FFF,
+    0 0 20px #FFF,
+    0 0 40px rgb(63, 92, 255),
+    0 0 80px rgb(63, 92, 255),
+    0 0 90px rgb(63, 92, 255),
+    0 0 100px rgb(63, 92, 255);
+}
+
+@keyframes blink {
+  0%, 100% {
+    background-color: #17c47c;
+    box-shadow:
+      0 0 5px #17c47c,
+      0 0 25px #17c47c,
+      0 0 50px #17c47c,
+      0 0 200px #17c47c;
+  }
+  50% {
+    background-color: #57e6aa;
+    box-shadow:
+      0 0 5px #57e6aa,
+      0 0 25px #57e6aa,
+      0 0 50px #57e6aa,
+      0 0 200px #57e6aa;
+  }
+}
+
+.copyButton.copied {
+  background-color: #ee853f;
+  animation: copiedBlink 3s infinite linear;
+}
+
+@keyframes copiedBlink {
+  0%, 100% {
+    background-color: #ee853f;
+    box-shadow:
+      0 0 5px #ee853f,
+      0 0 25px #ee853f,
+      0 0 50px #ee853f,
+      0 0 200px #ee853f;
+  }
+  50% {
+    background-color: #ffaf46;
+    box-shadow:
+      0 0 5px #ffaf46,
+      0 0 25px #ffaf46,
+      0 0 50px #ffaf46,
+      0 0 200px #ffaf46;
+  }
+}
+
+@media screen and (min-width: 1000px) {
+  .title {
+    font-size: 5rem;
+  }
+  body {
+    margin: 0 2rem;
+  }
+  legend {
+    font-size: 2rem;
+    font-weight: 500;
+  }
+  label {
+    font-size: 1.2rem;
+  }
+  li, p {
+    line-height: 2rem;
+    font-size: 1.3rem;
+  }
+  .copyButton {
+    position: relative;
+    width: 15%;
+    display: flex;
+    border-radius: 1rem;
+    margin: auto;
+    margin-bottom: 1rem;
+    justify-content: center;
+    align-items: center;
+    height: 4.5rem;
+    background-color: rgba(70, 129, 244, 0.85);
+    color: white;
+    font-size: 2rem;
+    border: none;
+  }
+  textarea {
+    font-size: 1.2rem;
+  }
+}
