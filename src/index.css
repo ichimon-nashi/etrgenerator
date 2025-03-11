@@ -134,6 +134,10 @@ li, p {
   grid-gap: 1rem;
 }
 
+.leftColumn {
+  color: rgb(196, 59, 59);
+}
+
 /* Additional Remark Component */
 .additionalRemarks-Container {
   margin-bottom: 4.5rem;
