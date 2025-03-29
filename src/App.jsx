@@ -8,7 +8,6 @@ import audio from "./assets/hallelujahSound.mp3";
 
 function App() {
   const [startDate, setStartDate] = useState(Date.now());
-  const [ccomQuestion, setCCOMQuestion] = useState('test');
   const [noOfBulletin, setNoOfBulletin] = useState(5);
   const [textToCopy, setTextToCopy] = useState('');
   const [copyStatus, setCopyStatus] = useState(false);
@@ -20,19 +19,19 @@ function App() {
   const hallelujahSound = new Audio(audio)
   hallelujahSound.volume = 0.4;
 
-  // useEffect(() => {
-  //   const ccomDataToBeCopied = document.querySelector("#ccomData").innerHTML
-  //   .replaceAll(/(<h2>|<p>|<\/p>)/g,"")
-  //     .replaceAll(/(<\/h2>)/g,"\r\n");
-  //   const bulletinDataToBeCopied = document.querySelector("#bulletinData").innerHTML
-  //     .replaceAll(/(<h2>|<\/h2>|<\/li>)/g,"")
-  //     .replaceAll(/(<li>)/g,"\r\n");
-  //   const additionalRemarkToBeCopied = document.querySelector("#textAreaData").innerHTML
-  //     .replaceAll(/(<h2>|<\/h2>|<\/li>)/g,"")
-  //     .replaceAll(/(<li>)/g,"\r\n");
-  //   const combinedText = ccomDataToBeCopied + "\n\n" + "二、公告抽問合格，摘要如下:" + bulletinDataToBeCopied + "\n\n" + additionalRemarkToBeCopied
-  //   setTextToCopy(combinedText);
-  // },[startDate, noOfBulletin])
+  useEffect(() => {
+    const ccomDataToBeCopied = document.querySelector("#ccomData").innerHTML
+    .replaceAll(/(<h2>|<p>|<\/p>)/g,"")
+      .replaceAll(/(<\/h2>)/g,"\r\n");
+    const bulletinDataToBeCopied = document.querySelector("#bulletinData").innerHTML
+      .replaceAll(/(<h2>|<\/h2>|<\/li>)/g,"")
+      .replaceAll(/(<li>)/g,"\r\n");
+    const additionalRemarkToBeCopied = document.querySelector("#textAreaData").innerHTML
+      .replaceAll(/(<h2>|<\/h2>|<\/li>)/g,"")
+      .replaceAll(/(<li>)/g,"\r\n");
+    const combinedText = ccomDataToBeCopied + "\n\n" + "二、公告抽問合格，摘要如下:" + bulletinDataToBeCopied + "\n\n" + additionalRemarkToBeCopied
+    setTextToCopy(combinedText);
+  },[startDate, noOfBulletin])
 
 
   const getCCOMQuestion = () => {
@@ -148,7 +147,6 @@ function App() {
         <div id="ccomData">
           <h2>一、飛安抽問合格，摘要如下：</h2>
           {(() => getCCOMQuestion())()}
-          {/* <p>{ccomQuestion}</p> */}
         </div>
       </fieldset>
 
