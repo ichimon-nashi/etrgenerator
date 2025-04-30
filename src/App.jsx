@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import "react-datepicker/dist/react-datepicker.css";
-import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { additionalRemarkData, bulletinData, ccomData } from './components/Data';
 import audio from "./assets/hallelujahSound.mp3";
 
@@ -11,28 +10,73 @@ function App() {
   const [noOfBulletin, setNoOfBulletin] = useState(5);
   const [textToCopy, setTextToCopy] = useState('');
   const [copyStatus, setCopyStatus] = useState(false);
+  
+  const ccomDataRef = useRef(null);
+  const bulletinDataRef = useRef(null);
+  const textAreaDataRef = useRef(null);
+  const audioRef = useRef(new Audio(audio));
 
   const formattedMonth = moment(startDate).format("MM-DD");
   const dayOfWeek = moment(startDate).format("dddd");
-  const oneWeekFromStartDate = moment(startDate).subtract(7, "days").format('YYYY-MM-DD')
-
-  const hallelujahSound = new Audio(audio)
-  hallelujahSound.volume = 0.4;
+  const oneWeekFromStartDate = moment(startDate).subtract(7, "days").format('YYYY-MM-DD');
 
   useEffect(() => {
-    const ccomDataToBeCopied = document.querySelector("#ccomData").innerHTML
-    .replaceAll(/(<h2>|<p>|<\/p>)/g,"")
-      .replaceAll(/(<\/h2>)/g,"\r\n");
-    const bulletinDataToBeCopied = document.querySelector("#bulletinData").innerHTML
-      .replaceAll(/(<h2>|<\/h2>|<\/li>)/g,"")
-      .replaceAll(/(<li>)/g,"\r\n");
-    const additionalRemarkToBeCopied = document.querySelector("#textAreaData").innerHTML
-      .replaceAll(/(<h2>|<\/h2>|<\/li>)/g,"")
-      .replaceAll(/(<li>)/g,"\r\n");
-    const combinedText = ccomDataToBeCopied + "\n\n" + "二、公告抽問合格，摘要如下:" + bulletinDataToBeCopied + "\n\n" + additionalRemarkToBeCopied
-    setTextToCopy(combinedText);
-  },[startDate, noOfBulletin])
+    audioRef.current.volume = 0.4;
+    return () => {
+      audioRef.current.pause();
+    };
+  }, []);
 
+  const processTextContent = () => {
+    if (!ccomDataRef.current || !bulletinDataRef.current || !textAreaDataRef.current) return '';
+    
+    // CCOM Data - Safe extraction with null checks
+    let ccomDataToBeCopied = '';
+    const h2CcomElement = ccomDataRef.current.querySelector('h2');
+    const pCcomElement = ccomDataRef.current.querySelector('p');
+    
+    if (h2CcomElement) {
+      ccomDataToBeCopied += h2CcomElement.textContent + "\r\n";
+    }
+    
+    if (pCcomElement) {
+      ccomDataToBeCopied += pCcomElement.textContent;
+    }
+    
+    // Bulletin Data - Safe extraction
+    let bulletinDataToBeCopied = '';
+    const bulletinItems = bulletinDataRef.current.querySelectorAll('li');
+    
+    if (bulletinItems && bulletinItems.length > 0) {
+      bulletinDataToBeCopied = Array.from(bulletinItems)
+        .map(li => li.textContent)
+        .join("\r\n");
+    }
+    
+    // Additional Remarks - Safe extraction
+    let additionalRemarkToBeCopied = '';
+    const h2TextAreaElement = textAreaDataRef.current.querySelector('h2');
+    const remarkItems = textAreaDataRef.current.querySelectorAll('li');
+    
+    if (h2TextAreaElement) {
+      additionalRemarkToBeCopied += h2TextAreaElement.textContent + "\r\n";
+    }
+    
+    if (remarkItems && remarkItems.length > 0) {
+      additionalRemarkToBeCopied += Array.from(remarkItems)
+        .map(li => li.textContent)
+        .join("\r\n");
+    }
+    
+    return ccomDataToBeCopied + "\n\n" + "二、公告抽問合格，摘要如下:" + "\r\n" + bulletinDataToBeCopied + "\n\n" + additionalRemarkToBeCopied;
+  };
+
+  useEffect(() => {
+    // Wait for refs to be populated
+    if (ccomDataRef.current && bulletinDataRef.current && textAreaDataRef.current) {
+      setTextToCopy(processTextContent());
+    }
+  }, [startDate, noOfBulletin]);
 
   const getCCOMQuestion = () => {
     const randomCCOMQuestion = [];
@@ -41,32 +85,27 @@ function App() {
         if (ccomData[i]["chapter"] === "12") {
           switch (dayOfWeek) {
             case "Monday":
-              console.log(dayOfWeek)
               randomCCOMQuestion.push(`1. 依公告抽問飛安暨主題加強宣導月題庫。抽問 F2${ccomData[i]["questionList"][0]}，抽問結果正常。`);
               break;
             case "Tuesday":
-              console.log(dayOfWeek)
               randomCCOMQuestion.push(`1. 依公告抽問飛安暨主題加強宣導月題庫。抽問 F2${ccomData[i]["questionList"][1]}，抽問結果正常。`);
               break;
             case "Wednesday":
-              console.log(dayOfWeek)
               randomCCOMQuestion.push(`1. 依公告抽問飛安暨主題加強宣導月題庫。抽問 F2${ccomData[i]["questionList"][2]}，抽問結果正常。`);
               break;
             case "Thursday":
-              console.log(dayOfWeek)
               randomCCOMQuestion.push(`1. 依公告抽問飛安暨主題加強宣導月題庫。抽問 F2${ccomData[i]["questionList"][3]}，抽問結果正常。`);
               break;
             case "Friday":
-              console.log(dayOfWeek)
               randomCCOMQuestion.push(`1. 依公告抽問飛安暨主題加強宣導月題庫。抽問 F2${ccomData[i]["questionList"][4]}，抽問結果正常。`);
               break;
             case "Saturday":
-              console.log(dayOfWeek)
               randomCCOMQuestion.push(`1. 依公告抽問飛安暨主題加強宣導月題庫。抽問 F2${ccomData[i]["questionList"][5]}，抽問結果正常。`);
               break;
             case "Sunday":
-              console.log(dayOfWeek)
               randomCCOMQuestion.push(`1. 依公告抽問飛安暨主題加強宣導月題庫。抽問 F2${ccomData[i]["questionList"][6]}，抽問結果正常。`);
+              break;
+            default:
               break;
           }
         } else {
@@ -105,26 +144,7 @@ function App() {
           {`${index + 1}. ${item.message}`}
         </li>
       )
-    })
-
-  const handleCopyButton = () => {
-    setCopyStatus(true);
-    setTimeout(() => setCopyStatus(false), 2000); // Reset status after x seconds
-
-    const ccomDataToBeCopied = document.querySelector("#ccomData").innerHTML
-      .replaceAll(/(<h2>|<p>|<\/p>)/g, "")
-      .replaceAll(/(<\/h2>)/g, "\r\n");
-    const bulletinDataToBeCopied = document.querySelector("#bulletinData").innerHTML
-      .replaceAll(/(<h2>|<\/h2>|<\/li>)/g, "")
-      .replaceAll(/(<li>)/g, "\r\n");
-    const additionalRemarkToBeCopied = document.querySelector("#textAreaData").innerHTML
-      .replaceAll(/(<h2>|<\/h2>|<\/li>)/g, "")
-      .replaceAll(/(<li>)/g, "\r\n");
-    const combinedText = ccomDataToBeCopied + "\n\n" + "二、公告抽問合格，摘要如下:" + bulletinDataToBeCopied + "\n\n" + additionalRemarkToBeCopied
-    console.log(combinedText)
-    setTextToCopy(combinedText);
-    hallelujahSound.play();
-  };
+    });
 
   return (
     <>
@@ -144,9 +164,9 @@ function App() {
 
       <fieldset className='ccom-Container'>
         <legend>CCOM抽問</legend>
-        <div id="ccomData">
+        <div id="ccomData" ref={ccomDataRef}>
           <h2>一、飛安抽問合格，摘要如下：</h2>
-          {(() => getCCOMQuestion())()}
+          {getCCOMQuestion()}
         </div>
       </fieldset>
 
@@ -169,7 +189,7 @@ function App() {
             <div className="leftColumn">
               {bulletinTimeStamp}
             </div>
-            <div id="bulletinData" className="rightColumn">
+            <div id="bulletinData" ref={bulletinDataRef} className="rightColumn">
               {newestBulletin}
             </div>
           </div>
@@ -178,20 +198,30 @@ function App() {
 
       <fieldset className='additionalRemarks-Container'>
         <legend>Team+宣達事項</legend>
-        <div id="textAreaData">
+        <div id="textAreaData" ref={textAreaDataRef}>
           <h2>三、其他：</h2>
           {filteredRemarks.length < 1 ? <li>1. 無。</li> : filteredRemarks}
         </div>
       </fieldset>
 
-      <CopyToClipboard text={textToCopy} >
-        <button
-          className={`copyButton ${copyStatus ? "copied" : ""}`}
-          onClick={handleCopyButton}
-        >
-          {copyStatus ? "COPIED ✅" : "COPY 📋"}
-        </button>
-      </CopyToClipboard>
+      <button
+        className={`copyButton ${copyStatus ? "copied" : ""}`}
+        onClick={() => {
+          const currentText = processTextContent();
+          navigator.clipboard.writeText(currentText)
+            .then(() => {
+              console.log("Text copied successfully:\n\n", currentText);
+              setCopyStatus(true);
+              setTimeout(() => setCopyStatus(false), 2000);
+              audioRef.current.play();
+            })
+            .catch(err => {
+              console.error("Failed to copy text: ", err);
+            });
+        }}
+      >
+        {copyStatus ? "COPIED ✅" : "COPY 📋"}
+      </button>
     </>
   )
 }
