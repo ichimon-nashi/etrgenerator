@@ -7,6 +7,7 @@ import audio from "./assets/hallelujahSound.mp3";
 
 function App() {
   const [startDate, setStartDate] = useState(Date.now());
+  const [selectedTime, setSelectedTime] = useState('23:59'); // Default to end of day
   const [noOfBulletin, setNoOfBulletin] = useState(5);
   const [textToCopy, setTextToCopy] = useState('');
   const [copyStatus, setCopyStatus] = useState(false);
@@ -72,11 +73,17 @@ function App() {
   };
 
   useEffect(() => {
-    // Wait for refs to be populated
+    // Wait for refs to be populated and trigger re-render when time changes
     if (ccomDataRef.current && bulletinDataRef.current && textAreaDataRef.current) {
       setTextToCopy(processTextContent());
     }
-  }, [startDate, noOfBulletin]);
+  }, [startDate, selectedTime, noOfBulletin]);
+
+  // Force component update when selectedTime changes
+  const [forceUpdate, setForceUpdate] = useState(0);
+  useEffect(() => {
+    setForceUpdate(prev => prev + 1);
+  }, [selectedTime]);
 
   const getCCOMQuestion = () => {
     const randomCCOMQuestion = [];
@@ -117,8 +124,24 @@ function App() {
     return <p>{randomCCOMQuestion}</p>;
   }
 
+  // Helper function to check if bulletin time is before selected time
+  const isTimeBeforeSelected = (bulletinTime) => {
+    // Ensure we're parsing the times correctly
+    const selectedMoment = moment(selectedTime, 'HH:mm');
+    const bulletinMoment = moment(bulletinTime, 'HH:mm');
+    return bulletinMoment.isSameOrBefore(selectedMoment);
+  };
+
   const bulletinTimeStamp = bulletinData
     .filter(criteria => moment(criteria.date).isSameOrBefore(startDate))
+    .filter(criteria => {
+      // If bulletin is from the same date as selected date, check time
+      if (moment(criteria.date).isSame(startDate, 'day')) {
+        return isTimeBeforeSelected(criteria.time);
+      }
+      // If bulletin is from before the selected date, include it
+      return moment(criteria.date).isBefore(startDate, 'day');
+    })
     .slice(-noOfBulletin) //No of bulletin displayed based on input
     .map((item) => {
       return (
@@ -128,6 +151,14 @@ function App() {
 
   const newestBulletin = bulletinData
     .filter(criteria => moment(criteria.date).isSameOrBefore(startDate))
+    .filter(criteria => {
+      // If bulletin is from the same date as selected date, check time
+      if (moment(criteria.date).isSame(startDate, 'day')) {
+        return isTimeBeforeSelected(criteria.time);
+      }
+      // If bulletin is from before the selected date, include it
+      return moment(criteria.date).isBefore(startDate, 'day');
+    })
     .slice(-noOfBulletin) //No of bulletin displayed based on input
     .map((item, index) => {
       return (
@@ -158,6 +189,12 @@ function App() {
             name="datepicker"
             selected={startDate}
             onChange={(date) => setStartDate(date)}
+          />
+          <input
+            type="time"
+            value={selectedTime}
+            onChange={(e) => setSelectedTime(e.target.value)}
+            style={{ marginLeft: '10px' }}
           />
         </div>
       </div>
